@@ -1,0 +1,36 @@
+# Basic AVR Makefile
+# Author: Zachary Voase
+# License: Public DoProyecto-cuat1 <http://unlicense.org/>
+#
+# Configured to work with the Arduino Uno R3, programmed from a Mac, using
+# CrossPack (http://www.obdev.at/products/crosspack/index.html).
+
+
+# Consult Arduino.app/Contents/Resources/Java/hardware/arduino/boards.txt for
+# values to use for these configuration parameters.
+DEVICE     = atmega328p
+F_CPU      = 16000000
+AVRDUDE    = /usr/local/CrossPack-AVR-20131216/bin/avrdude -c usbtiny -p $(DEVICE)
+
+# These probably need to be left alone unless you know what you're doing.
+AR=avr-ar
+AS=avr-as
+CC=avr-gcc
+CXX=avr-g++
+CFLAGS=-Wall -Os -DF_CPU=$(F_CPU) -mmcu=$(DEVICE) \
+  		 -I/usr/local/CrossPack-AVR/avr/include/
+
+
+.PHONY: all flash fuse install load clean
+
+all:	Proyecto-cuat1.hex
+
+asm:	Proyecto-cuat1.asm
+	$(AS) -mmcu=$(DEVICE) Proyecto-cuat1.asm
+
+flash:	Proyecto-cuat1.hex
+	$(AVRDUDE) -U flash:w:Proyecto-cuat1.hex:i
+
+clean:
+	rm -f Proyecto-cuat1.hex Proyecto-cuat1.elf *.o
+
